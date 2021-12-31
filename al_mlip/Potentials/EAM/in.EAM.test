@@ -1,0 +1,28 @@
+# start
+
+units           metal
+dimension       3
+atom_style      atomic
+
+box tilt large
+read_data  run.data
+# pair style mtp
+pair_style  eam/alloy
+pair_coeff  * * /home/jgabriel/Transfer/FitAtomicrexSlab/AtomicrexNew/in.EAM.dfs Al
+mass        * 26.981
+
+
+# ---------- Define Settings --------------------- 
+compute eng all pe/atom 
+compute eatoms all reduce sum c_eng 
+
+# minimization
+#reset_timestep 0
+#fix 1 all box/relax iso 0.0 vmax 0.00000001
+thermo 1
+thermo_style custom step pe lx ly lz press c_eatoms
+#min_style cg 
+
+dump            1 all cfg 1 dump.*.cfg mass type xs ys zs x y z fx fy fz
+
+run 0

@@ -1,0 +1,26 @@
+# start
+
+units           metal
+dimension       3
+atom_style      atomic
+
+box tilt large
+read_data  run.data
+# pair style born
+pair_style      quip
+pair_coeff      * * /home/jgabriel/Transfer/FitAtomicrexSlab/GAP_2b_SOAP.xml "Potential xml_label = placetag" 13 
+
+
+# ---------- Define Settings --------------------- 
+compute eng all pe/atom 
+compute eatoms all reduce sum c_eng 
+
+# minimization
+reset_timestep 0
+fix 1 all box/relax iso 0.0 vmax 0.001
+thermo 1
+thermo_style custom step pe lx ly lz press c_eatoms 
+
+dump            1 all cfg 1 dump.*.cfg mass type xs ys zs fx fy fz
+
+run 0
